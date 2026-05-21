@@ -1,4 +1,4 @@
-# Andrea Bruno License 1.3
+# Andrea Bruno License 1.4
 
 ## License and terms and conditions of use
 
@@ -26,6 +26,8 @@ Such assignment shall not transfer authorship, original intellectual property ow
 The original author shall always remain recognized as the creator and original rights holder of the project and of all pre-existing source code and related intellectual property.  
 Any rights granted to authorized forks, derivative works or white-label distributions shall be strictly limited to the scope explicitly defined by a separate written agreement.  
 No fork, derivative work, registration, deposit, publication, branding activity or third-party filing, including registrations before copyright offices, collecting societies or intellectual property authorities, shall transfer, replace, invalidate or supersede the authorship, ownership, priority rights or original intellectual property rights of the original author and original project.
+Any white-label authorization or authorized fork granted under this license shall be considered personal, limited, non-transferable and non-sublicensable unless explicitly stated otherwise in a separate written agreement signed by the original author.
+No authorized party may redistribute, transfer, sublicense, assign, resell, grant usage rights or provide copies of the software, source code or derivative works to third parties beyond the scope explicitly permitted by the original author.
 
 ## Priority
 
