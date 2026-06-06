@@ -66,7 +66,7 @@ namespace UISupportBlazor
                     using var reader = new StreamReader(context.Request.Body);
                     var requestBody = await reader.ReadToEndAsync();
                     using JsonDocument doc = JsonDocument.Parse(requestBody);
-                    var methodInfo = UISupportGeneric.API.GetMethodInfo(doc, methodName, _apiCommandSet);
+                    var methodInfo = UISupportGeneric.API.GetMethodInfo(doc, ref methodName, _apiCommandSet);
                     if (!String.IsNullOrEmpty(_apiPubblicKey) && methodInfo?.GetCustomAttribute<IsPubblicAPIAttribute>() == null)
                     {
                         // Validate the digital signature in the request header
