@@ -167,7 +167,10 @@ namespace UISupportBlazor
             {
                 if (ActiveSessions.TryGetValue(id, out var session))
                 {
-                    session.Values[name] = value;
+                    lock (session.Values)
+                    {
+                        session.Values[name] = value;
+                    }
                 }
             }
 
@@ -181,8 +184,11 @@ namespace UISupportBlazor
             {
                 if (ActiveSessions.TryGetValue(id, out var session))
                 {
-                    if (session.Values.TryGetValue(name, out var value))
-                        return value;
+                    lock (session.Values)
+                    {
+                        if (session.Values.TryGetValue(name, out var value))
+                            return value;
+                    }
                 }
                 return null;
             }
@@ -412,9 +418,12 @@ namespace UISupportBlazor
 
             public override bool TryGetMember(GetMemberBinder binder, out object? result)
             {
-                if (_dictionary.TryGetValue(binder.Name, out result))
+                lock (_dictionary)
                 {
-                    return true;
+                    if (_dictionary.TryGetValue(binder.Name, out result))
+                    {
+                        return true;
+                    }
                 }
                 result = null;
                 return true;
@@ -422,7 +431,10 @@ namespace UISupportBlazor
 
             public override bool TrySetMember(SetMemberBinder binder, object? value)
             {
-                _dictionary[binder.Name] = value!;
+                lock (_dictionary)
+                {
+                    _dictionary[binder.Name] = value!;
+                }
                 return true;
             }
         }

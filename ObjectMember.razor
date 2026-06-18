@@ -61,7 +61,7 @@
         {
             attributes.Add("type", EditableMember.InputTypeText);
             attributes.Add("checked", EditableMember.IsTrue);
-            <input @attributes="@attributes" @bind=EditableMember.LiteralValue @oninput=OnChange @onblur=OnBlur />
+            <input @attributes="@attributes" @bind=EditableMember.LiteralValue @oninput=OnChange @onblur=OnBlur @onkeydown="HandleKeyDown" />
         }
 
 
@@ -88,6 +88,12 @@
     [Parameter, EditorRequired]
     public Action? RefreshContainer { get; set; }
 
+    /// <summary>
+    /// Callback invoked when Enter is pressed on a non-multiline input.
+    /// Used to trigger the parent method's execute button.
+    /// </summary>
+    [Parameter]
+    public Action? OnEnterKeyPressed { get; set; }
 
     [Parameter]
     public EditableUIMember EditableMember { get; set; }
@@ -101,6 +107,13 @@
         {
             EditableMember.LiteralValue = args?.Value?.ToString();
             Changed = true;
+        }
+    }
+    private void HandleKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            OnEnterKeyPressed?.Invoke();
         }
     }
     private bool Changed;

@@ -54,7 +54,7 @@
                             }
                             @foreach (var parameter in method.Parameters)
                             {
-                                <ObjectMember EditableMember="@parameter" RefreshContainer="@Refresh"></ObjectMember>
+                                <ObjectMember EditableMember="@parameter" RefreshContainer="@Refresh" OnEnterKeyPressed="@(() => { method.Execute(); RefreshContainer?.Invoke(); })"></ObjectMember>
                             }
                             <button class="btn btn-primary my-1" type="submit" @onclick="() => { method.Execute(); RefreshContainer?.Invoke(); }">@method.Label</button>
                             @if (method.Parameters.Count == 0)
