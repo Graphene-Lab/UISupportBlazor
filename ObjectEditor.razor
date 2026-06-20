@@ -56,7 +56,7 @@
                             {
                                 <ObjectMember EditableMember="@parameter" RefreshContainer="@Refresh" OnEnterKeyPressed="@(() => { method.Execute(); RefreshContainer?.Invoke(); })"></ObjectMember>
                             }
-                            <button class="btn btn-primary my-1" type="submit" @onclick="() => { method.Execute(); RefreshContainer?.Invoke(); }">@method.Label</button>
+                            <button class="btn btn-primary my-1" type="button" @onclick="() => { method.Execute(); RefreshContainer?.Invoke(); }">@method.Label</button>
                             @if (method.Parameters.Count == 0)
                             {
                                 <Tooltip Text="@method.Description"></Tooltip>
@@ -105,7 +105,7 @@
 
 @if (Info != null && !Info.InterfaceType.HasFlag(InterfaceType.NoSubmitButton) && !Info.InterfaceType.HasFlag(InterfaceType.AutoSave))
 {
-    <button class="btn btn-primary" type="submit" @onclick=OnSubmit>@Dictionary.Submit</button>
+    <button class="btn btn-primary" type="button" @onclick=OnSubmit>@Dictionary.Submit</button>
 
     @code {
     private void OnSubmit(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
