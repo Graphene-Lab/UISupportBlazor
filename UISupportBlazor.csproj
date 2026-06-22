@@ -6,7 +6,7 @@
     <Version>$([System.DateTime]::Now.ToString("1.yy.MM.dd"))</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;Test</Configurations>
     <Copyright>Andrea Bruno</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>blazor;razor,AI;automation; rapid development; code generation; GUI generation; automated design; software development; automatic user interface; assisted programming; low-code development; no-code development; dynamic framework; design tools; GUI customization; visual design; intelligent development; code optimization; rapid prototyping; AI in development; dynamic UI; development assistant; graphical interfaces; code analysis; productivity tools; software modeling; responsive design; automated workflow; drag and drop design; form generator; automatic coding; project management; developer assistant; application builder; artificial intelligence; simplified development; visual editor; template generator; process automation; layout management; assisted development; AI-driven prototyping;automated API creation; API automation; API development tools; API generator; API design automation; auto-generated API; API scaffold; API framework generator; API creation software; API boilerplate; API code generation; API deployment automation; AI-generated API; API integration automation</PackageTags>
