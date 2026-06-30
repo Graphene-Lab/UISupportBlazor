@@ -24,7 +24,7 @@
     {
         <img src="@string.Format("data:image/png;base64,{0}", EditableMember.ImageBase64)" />
     }
-    else if (EditableMember.IsReadOnly && EditableMember.InputType == InputType.text || EditableMember.InputType == InputType.textarea)
+    else if (EditableMember.IsReadOnly && (EditableMember.InputType == InputType.text || EditableMember.InputType == InputType.textarea))
     {
         var html = MarkdownConverter.ConvertToHtml(EditableMember.LiteralValue);
         <div id="@EditableMember.Id" style="white-space: pre-wrap; overflow-wrap: anywhere">
