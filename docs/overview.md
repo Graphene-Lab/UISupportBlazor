@@ -35,7 +35,7 @@ Browser
 | `Support.cs` | Blazor-specific helpers and extension methods |
 | `MarkdownParser.cs` | Renders Markdown descriptions from XML doc-comments |
 | `ObjectEditor.razor` | Auto-generated form for editing an object's properties |
-| `ObjectMember.razor` | Renders a single property/field |
+| `ObjectMember.razor` | Renders a single property/field — including the standard multi-file picker for `FileAttachment[]` parameters |
 | `ObjectArray.razor` | Renders collections |
 | `Menu.razor` | Auto-generated navigation menu |
 | `Nav.razor` | Navigation logic |

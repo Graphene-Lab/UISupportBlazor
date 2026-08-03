@@ -12,6 +12,13 @@ namespace UISupportBlazor
     public static class Support
     {
         /// <summary>
+        /// Maximum size, in bytes, accepted for a single attachment uploaded through the
+        /// multi-file picker (InputType.file). Defaults to 100 MB per file.
+        /// Larger files are rejected by the browser upload and reported as an error.
+        /// </summary>
+        public static long MaxAttachmentSizeBytes = 100L * 1024 * 1024;
+
+        /// <summary>
         /// Get all ClassInfos instantiated as members of the type passed as a parameter.
         /// This function also creates a browsing session for the current user(if it hasn't already been created), and creates an object of the type passed as a parameter and assigns it to the user session.
         /// </summary>

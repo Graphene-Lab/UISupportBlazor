@@ -1,4 +1,5 @@
 ﻿@implements IDisposable
+@using UISupportGeneric
 @using UISupportGeneric.UI
 @using UISupportGeneric.Resources
 @{
@@ -23,6 +24,26 @@
     else if (EditableMember.InputType == InputType.image)
     {
         <img src="@string.Format("data:image/png;base64,{0}", EditableMember.ImageBase64)" />
+    }
+    else if (EditableMember.InputType == InputType.file)
+    {
+        @* Standard multi-file picker: the browser dialog allows selecting several files at once
+           (Ctrl/Shift-click) or one at a time. Files are uploaded in their ORIGINAL binary format;
+           conversion to Markdown is performed server-side by the consumer. *@
+        <InputFile id="@EditableMember.Id" class="form-control-file" multiple OnChange="OnFilesSelected" />
+        @if (EditableMember.Attachments is { Length: > 0 } files)
+        {
+            <ul class="mt-2 mb-0 pl-3">
+                @foreach (var file in files)
+                {
+                    <li class="text-secondary">
+                        @file.FileName
+                        <button type="button" class="btn btn-link btn-sm p-0 ml-2 text-danger"
+                                title="Rimuovi allegato" @onclick="() => RemoveAttachment(file)">✕</button>
+                    </li>
+                }
+            </ul>
+        }
     }
     else if (EditableMember.IsReadOnly && (EditableMember.InputType == InputType.text || EditableMember.InputType == InputType.textarea))
     {
@@ -86,6 +107,38 @@
     // Used to update the container component
     [Parameter, EditorRequired]
     public Action? RefreshContainer { get; set; }
+
+    /// <summary>
+    /// Called when the user selects one or more files in the multi-file input
+    /// (<see cref="InputType.file"/>). Files are read in their ORIGINAL binary format and
+    /// stored as <see cref="FileAttachment"/>s; the Markdown conversion happens server-side.
+    /// New selections are APPENDED to the already-selected files (deduplicated by name),
+    /// so the user can add files one at a time as well as several at once (Ctrl/Shift-click).
+    /// </summary>
+    private async Task OnFilesSelected(InputFileChangeEventArgs args)
+    {
+        var current = EditableMember.Attachments?.ToList() ?? [];
+        var seen = new HashSet<string>(current.Select(a => a.FileName), StringComparer.OrdinalIgnoreCase);
+        foreach (var file in args.GetMultipleFiles())
+        {
+            await using var stream = new MemoryStream();
+            await file.OpenReadStream(maxAllowedSize: Support.MaxAttachmentSizeBytes).CopyToAsync(stream);
+            if (seen.Add(file.Name))
+                current.Add(new FileAttachment(file.Name, stream.ToArray()));
+        }
+        EditableMember.SetAttachments(current.ToArray());
+        await InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// Removes a previously selected attachment (e.g. when the user clicks its ✕ button).
+    /// </summary>
+    private void RemoveAttachment(FileAttachment file)
+    {
+        var remaining = EditableMember.Attachments?.Where(a => !ReferenceEquals(a, file)).ToArray() ?? [];
+        EditableMember.SetAttachments(remaining);
+        InvokeAsync(StateHasChanged);
+    }
 
     /// <summary>
     /// Callback invoked when Enter is pressed on a non-multiline input.

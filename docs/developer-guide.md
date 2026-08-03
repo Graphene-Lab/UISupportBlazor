@@ -50,6 +50,34 @@ Use attributes from `UISupportGeneric` to refine the generated interface:
 | `[Regex]` | Adds regex-based validation |
 | XML `<summary>` | Used as label / tooltip in the UI |
 
+## File Attachments (multi-file picker)
+
+A method parameter of type `FileAttachment[]` (or `List<FileAttachment>` / `IEnumerable<FileAttachment>`)
+is rendered by `ObjectMember` as a **standard multi-file input** (`<InputFile Multiple>`).
+The names of the selected files are listed under the picker, each with a ✕ button to remove it.
+
+```csharp
+public void Run(string prompt, FileAttachment[]? attachments = null) { ... }
+```
+
+Rules of the feature:
+
+- **Add several files at once or one at a time.** Each new selection is APPENDED to the
+  already-selected files (Ctrl/Shift-click selects several in one dialog; picking a single file
+  in a second dialog adds it to the previous ones). Files with the same name are not duplicated.
+- **Original binary, no client-side conversion.** `ObjectMember.OnFilesSelected` reads each file
+  with `OpenReadStream` and stores it in a `FileAttachment` (name + bytes). The conversion to
+  Markdown is performed server-side by the consumer (e.g. `AllToMarkdown.Converter`, or
+  Z.ai GLM-OCR for images), not in the browser.
+- **Size limit.** A single file cannot exceed `Support.MaxAttachmentSizeBytes` (default 100 MB);
+  the value is a mutable static so applications can raise/lower it.
+- **Optional.** If nothing is selected the method receives `null` (declare the parameter nullable).
+- **Context budget.** The consumer may truncate the injected content to fit the model context
+  (see `AgentOrchestrator.MaxAttachmentContextChars` and `TruncateMarkdown` in AIOrchestrator).
+- **Works everywhere a `FileAttachment[]` member is rendered** — method parameters and properties
+  alike: the Voice panel exposes a static `FileAttachment[]` property so attachments also flow
+  into the streaming chat path.
+
 ## API Middleware
 
 `ApiMiddleware` intercepts HTTP POST requests to `/api` (configurable):
