@@ -66,4 +66,30 @@ Development environment for automatically creating the UI and API for Blazor app
     </PropertyGroup>
   </Target>
 
+  <PropertyGroup>
+    <NuGetSource Condition="'$(NuGetSource)' == ''">https://api.nuget.org/v3/index.json</NuGetSource>
+  </PropertyGroup>
+
+  <!-- "Crea pacchetto" pubblica anche su nuget.org. La chiave va nell'ambiente: setx NuGetApiKey <key> (poi riavviare VS). -->
+  <Target Name="CleanOldNuGetPackages" BeforeTargets="GenerateNuspec">
+    <CreateItem Include="$(PackageOutputPath)*.nupkg">
+      <Output TaskParameter="Include" ItemName="_OldNupkg" />
+    </CreateItem>
+    <Delete Files="@(_OldNupkg)" />
+  </Target>
+
+  <Target Name="PublishPackageToNuGet" AfterTargets="Pack">
+    <Error Condition="'$(NuGetApiKey)' == ''"
+           Text="Variabile d'ambiente NuGetApiKey non impostata: eseguire `setx NuGetApiKey &lt;chiave&gt;` e riavviare Visual Studio." />
+    <!-- CreateItem espande il wildcard a runtime, il file del pack nasce durante la build. -->
+    <CreateItem Include="$(PackageOutputPath)*.nupkg">
+      <Output TaskParameter="Include" ItemName="_NuGetPackageToPush" />
+    </CreateItem>
+    <Error Condition="'@(_NuGetPackageToPush)' == ''"
+           Text="Nessun pacchetto trovato in $(PackageOutputPath): il pack non ha prodotto il file atteso." />
+    <Message Importance="High"
+             Text="Pubblicazione di %(_NuGetPackageToPush.Identity) su $(NuGetSource) ..." />
+    <Exec Command="dotnet nuget push &quot;%(_NuGetPackageToPush.Identity)&quot; --api-key &quot;$(NuGetApiKey)&quot; --source &quot;$(NuGetSource)&quot; --skip-duplicate" />
+  </Target>
+
 </Project>
