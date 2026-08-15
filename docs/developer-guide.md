@@ -73,7 +73,7 @@ Rules of the feature:
   the value is a mutable static so applications can raise/lower it.
 - **Optional.** If nothing is selected the method receives `null` (declare the parameter nullable).
 - **Context budget.** The consumer may truncate the injected content to fit the model context
-  (see `AgentOrchestrator.MaxAttachmentContextChars` and `TruncateMarkdown` in AIOrchestrator).
+  (see `AgentHarness.MaxAttachmentContextChars` and `TruncateMarkdown` in AIOrchestrator).
 - **Works everywhere a `FileAttachment[]` member is rendered** — method parameters and properties
   alike: the Voice panel exposes a static `FileAttachment[]` property so attachments also flow
   into the streaming chat path.
