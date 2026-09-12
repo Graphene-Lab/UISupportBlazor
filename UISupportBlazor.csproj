@@ -34,12 +34,10 @@ Development environment for automatically creating the UI and API for Blazor app
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UISupportGeneric" Version="1.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--This reference if missing can be replaced with the related NuGet package: UISupportGeneric-->
-    <ProjectReference Include="..\UISupportGeneric\UISupportGeneric.csproj" />
+    <!-- Dual-reference pattern: the local sibling project wins when present; otherwise the
+         latest UISupportGeneric NuGet package (1.*) is restored. -->
+    <ProjectReference Include="..\UISupportGeneric\UISupportGeneric.csproj" Condition="Exists('..\UISupportGeneric\UISupportGeneric.csproj')" />
+    <PackageReference Include="UISupportGeneric" Version="1.*" Condition="!Exists('..\UISupportGeneric\UISupportGeneric.csproj')" />
   </ItemGroup>
 
   
@@ -70,7 +68,7 @@ Development environment for automatically creating the UI and API for Blazor app
     <NuGetSource Condition="'$(NuGetSource)' == ''">https://api.nuget.org/v3/index.json</NuGetSource>
   </PropertyGroup>
 
-  <!-- "Crea pacchetto" pubblica anche su nuget.org. La chiave va nell'ambiente: setx NuGetApiKey <key> (poi riavviare VS). -->
+  <!-- "Create package" also publishes to nuget.org. The key goes in the environment: setx NuGetApiKey <key> (then restart VS). -->
   <Target Name="CleanOldNuGetPackages" BeforeTargets="GenerateNuspec">
     <CreateItem Include="$(PackageOutputPath)*.nupkg">
       <Output TaskParameter="Include" ItemName="_OldNupkg" />
@@ -80,15 +78,15 @@ Development environment for automatically creating the UI and API for Blazor app
 
   <Target Name="PublishPackageToNuGet" AfterTargets="Pack">
     <Error Condition="'$(NuGetApiKey)' == ''"
-           Text="Variabile d'ambiente NuGetApiKey non impostata: eseguire `setx NuGetApiKey &lt;chiave&gt;` e riavviare Visual Studio." />
-    <!-- CreateItem espande il wildcard a runtime, il file del pack nasce durante la build. -->
+           Text="Environment variable NuGetApiKey is not set: run `setx NuGetApiKey &lt;key&gt;` and restart Visual Studio." />
+    <!-- CreateItem expands the wildcard at runtime; the pack file is produced during the build. -->
     <CreateItem Include="$(PackageOutputPath)*.nupkg">
       <Output TaskParameter="Include" ItemName="_NuGetPackageToPush" />
     </CreateItem>
     <Error Condition="'@(_NuGetPackageToPush)' == ''"
-           Text="Nessun pacchetto trovato in $(PackageOutputPath): il pack non ha prodotto il file atteso." />
+           Text="No package found in $(PackageOutputPath): the pack did not produce the expected file." />
     <Message Importance="High"
-             Text="Pubblicazione di %(_NuGetPackageToPush.Identity) su $(NuGetSource) ..." />
+             Text="Publishing %(_NuGetPackageToPush.Identity) to $(NuGetSource) ..." />
     <Exec Command="dotnet nuget push &quot;%(_NuGetPackageToPush.Identity)&quot; --api-key &quot;$(NuGetApiKey)&quot; --source &quot;$(NuGetSource)&quot; --skip-duplicate" />
   </Target>
 
