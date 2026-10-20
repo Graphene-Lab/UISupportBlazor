@@ -6,6 +6,14 @@ Our goal? Well, in a playful tone, we could say that we're determined to make fr
 Just like coachmen became obsolete with the invention of the automobile, front-end developers might soon find themselves searching for new career paths. Thanks to our **Deterministic AI for Automatic Front-End Generation**, manually writing user interfaces will be a thing of the past.  
 Gone are the days of endless **XAML bindings and complex integrations**, the total automation has arrived, and the revolution is here. Of course, talented front-end developers will find new ways to apply their skills, but one thing is clear: the way we build front-ends is about to change forever!
 
+## A Pioneering Agentic AI Project for Coding
+
+UISupportBlazor is a **pioneering agentic AI project for coding**, and from the beginning it aimed to replace front-end developers with a completely new approach.
+
+The system does not generate source code as files. It creates the code of the GUI **on the fly, at runtime**, in a deterministic, fast and dynamic way: a code agent that writes the UI code directly inside the UI, at the moment it is needed, including the rendering of data visualizations. It also monitors what changes in the back-end and keeps the UI representation in sync, so what the user sees is always correct.
+
+When this idea was born, nothing like it existed, and the solution it adopts is still ahead of its time today.
+
 ## Revolutionize Your Development Process with Cutting-Edge Front-End Automation
 
 Discover the future of software development with our groundbreaking platform, engineered to **completely automate Blazor front-end creation**. This innovative technology allows development teams to focus on the core backend libraries and critical application functionalities, while the front-end is built seamlessly and effortlessly.
