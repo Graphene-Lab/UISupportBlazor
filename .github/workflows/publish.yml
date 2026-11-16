@@ -1,0 +1,53 @@
+name: Publish NuGet Package
+
+# GENERAL release rule, no project-file changes on any repo: a plain push is a code sync
+# and publishes nothing — this workflow does not even run for it. Publishing is an explicit,
+# versioned act: push a tag v* (e.g. v1.26.11.16) and the package is packed and published.
+# Works for every Graphene repo, current and future.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  # Trusted publishing: the job asks GitHub for a short-lived identity token and NuGet
+  # exchanges it for an API key that lives minutes. Nothing is stored, so nothing expires
+  # (the classic NUGET_API_KEY secret expired on 2026-10-30 and silently stopped every publish).
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Pack
+        shell: bash
+        env:
+          VER: ${{ github.ref_name }}
+        run: |
+          # Version from the TAG (v1.26.11.16 → 1.26.11.16), never the UTC runner clock: a tag
+          # pushed after local midnight would pack the previous day's version, already on
+          # nuget.org (--skip-duplicate swallows it) and today's package never ships.
+          VER="${VER#v}"
+          dotnet pack UISupportBlazor.csproj -c Release -o ./out -p:SkipNuGetPush=true -p:Version="$VER"
+      - name: NuGet login (trusted publishing, no stored key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          # The nuget.org account that owns the Graphene.* packages. The policy on nuget.org must
+          # name this repository (Andrea-Bruno/UISupportBlazor) and this workflow file, or the
+          # exchange is refused.
+          user: kocahoctpa
+      - name: Push to NuGet
+        shell: bash
+        run: |
+          # The key is minted per run and expires in minutes; there is no secret to renew. A
+          # failure here is a policy mismatch (repository, workflow file name or environment),
+          # not an expired credential.
+          dotnet nuget push ./out/*.nupkg \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+            --source https://www.nuget.org/api/v2/package \
+            --skip-duplicate
